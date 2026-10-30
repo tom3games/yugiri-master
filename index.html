@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>湯切り職人</title>
+<meta name="description" content="ラーメンの湯切り、気合を入れすぎるとお客さんにかかる。上下にフリックして湯を切り、60秒で何杯出せるか。天空落としを決めろ。ブラウザで遊べる3Dバカゲー。">
+<meta name="theme-color" content="#1d1310">
+<meta property="og:type" content="website">
+<meta property="og:title" content="湯切り職人 / NOODLE FLICK MASTER">
+<meta property="og:description" content="ラーメンの湯切り、気合を入れすぎるとお客さんにかかる。">
+<meta property="og:image" content="https://tom3games.github.io/yugiri-master/og.png?v=1">
+<meta property="og:url" content="https://tom3games.github.io/yugiri-master/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cpath d='M6 30h52c0 16-11 26-26 26S6 46 6 30z' fill='%23d6372b'/%3E%3Cpath d='M14 26q6-14 12 0t12 0t12 0' stroke='%23f3bf3a' stroke-width='5' fill='none' stroke-linecap='round'/%3E%3Cpath d='M44 4l6 20' stroke='%23fff4e0' stroke-width='4' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Maru+Gothic:wght@500;700;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
+<style>
+[hidden]{display:none!important}
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --night:#1d1310;--ink:#26160e;--cream:#fff4e0;--cream-dk:#d8c3a0;--red:#d6372b;--red-dk:#86190f;
+  --ai:#23305e;--ai-dk:#121a3c;--gold:#f3bf3a;--gold-dk:#9a7410;--soup:#e8a33a;--blue:#4fb3ff;
+  --disp:'Dela Gothic One','Zen Maru Gothic','Hiragino Sans','Yu Gothic',sans-serif;
+}
+html{background:var(--night);touch-action:manipulation;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+html,body{height:100%;color:var(--cream);font-family:'Zen Maru Gothic','Hiragino Maru Gothic ProN','Hiragino Sans','Yu Gothic',sans-serif;-webkit-tap-highlight-color:transparent;word-break:auto-phrase;line-break:strict;overflow-wrap:anywhere}
+body{overflow:hidden;background:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+button,canvas{touch-action:manipulation}
+button{font-family:inherit;color:inherit;font-size:inherit}
+:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+#world{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0}
+#fx{position:fixed;inset:0;z-index:15;pointer-events:none;overflow:hidden}
+#shade{position:fixed;inset:0;z-index:5;pointer-events:none;opacity:0;transition:opacity .5s;background:radial-gradient(120% 90% at 50% 40%,rgba(29,19,16,.55),rgba(14,8,6,.88))}
+body.dim #shade{opacity:1}
+
+.view{position:fixed;inset:0;z-index:10;height:100svh;overflow:hidden;display:flex;flex-direction:column;align-items:center;padding:max(58px,calc(env(safe-area-inset-top) + 52px)) 16px max(16px,calc(env(safe-area-inset-bottom) + 12px));gap:12px}
+.wrap{width:min(520px,100%);display:flex;flex-direction:column;align-items:center;gap:clamp(8px,1.6vh,14px);min-height:0;max-height:100%}
+.view:not([hidden]) .wrap{animation:enter .35s cubic-bezier(.2,.8,.2,1) both}
+@keyframes enter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+.btn{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;gap:10px;font-weight:900;font-size:18px;letter-spacing:.04em;border:0;border-radius:14px;min-height:54px;padding:0 18px;cursor:pointer;width:100%;
+  background:var(--cream);color:var(--ink);box-shadow:0 5px 0 var(--cream-dk),0 10px 18px rgba(0,0,0,.28);transition:transform .07s,box-shadow .07s,filter .15s}
+.btn::before{content:"";position:absolute;left:8px;right:8px;top:4px;height:42%;border-radius:10px 10px 40% 40%/10px 10px 14px 14px;background:linear-gradient(rgba(255,255,255,.42),rgba(255,255,255,0));pointer-events:none}
+.btn:active{transform:translateY(4px);box-shadow:0 1px 0 var(--cream-dk),0 3px 8px rgba(0,0,0,.25)}
+@media (hover:hover){.btn:hover{filter:brightness(1.07)}}
+.btn svg{width:24px;height:24px;flex:none;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.btn.red{background:linear-gradient(#ea5244,var(--red));color:#fff;box-shadow:0 6px 0 var(--red-dk),0 12px 22px rgba(214,55,43,.35);font-size:21px;min-height:60px}
+.btn.red:active{box-shadow:0 1px 0 var(--red-dk)}
+.btn.gold{background:linear-gradient(#ffd769,var(--gold));color:var(--ink);box-shadow:0 6px 0 var(--gold-dk),0 12px 22px rgba(0,0,0,.25)}
+.btn.gold:active{box-shadow:0 1px 0 var(--gold-dk)}
+.btn.ghost{background:rgba(29,19,16,.62);color:var(--cream);box-shadow:inset 0 0 0 2px rgba(255,244,224,.4);font-size:16px;min-height:46px;-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px)}
+.btn.ghost::before{display:none}
+.btn.ghost:active{transform:translateY(2px)}
+.row{display:flex;gap:10px;width:100%}
+.row>.btn{flex:1;min-width:0}
+
+#corner{position:fixed;top:max(10px,env(safe-area-inset-top));right:max(10px,env(safe-area-inset-right));z-index:50;display:flex;gap:8px}
+#corner button{height:40px;min-width:44px;padding:0 12px;border-radius:12px;border:0;background:rgba(29,19,16,.72);box-shadow:inset 0 0 0 2px rgba(255,244,224,.3);font-weight:900;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+#corner svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ---------- タイトル（のれんのロゴ） */
+#vTitle{justify-content:space-between}
+.noren{position:relative;display:flex;gap:6px;justify-content:center;width:min(440px,100%);filter:drop-shadow(0 10px 18px rgba(0,0,0,.45));animation:sway 4s ease-in-out infinite;transform-origin:50% 0}
+@keyframes sway{0%,100%{transform:rotate(-.8deg)}50%{transform:rotate(.8deg)}}
+.noren::before{content:"";position:absolute;left:-10px;right:-10px;top:-8px;height:10px;border-radius:5px;background:linear-gradient(#8a5a2a,#5c3a18)}
+.noren .flap{flex:1;background:linear-gradient(var(--ai),var(--ai-dk));border-radius:0 0 8px 8px;padding:12px 6px 14px;text-align:center;position:relative;overflow:hidden}
+.noren .flap::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(90deg,rgba(255,255,255,.04) 0 2px,transparent 2px 6px);pointer-events:none}
+.noren .a{font-weight:900;font-size:clamp(13px,3.8vw,18px);letter-spacing:.2em;color:var(--cream);opacity:.9;min-height:1.3em}
+.noren .b{font-family:var(--disp);font-weight:400;font-size:min(11vw,6.4vh,54px);line-height:1.1;color:#fff;letter-spacing:.02em;white-space:nowrap}
+.noren .b span{color:var(--gold)}
+.noren.en .b{font-size:min(7.4vw,4.6vh,36px)}
+.tagline{display:inline-block;margin-top:10px;font-weight:900;font-size:clamp(13px,3.6vw,16px);background:var(--cream);color:var(--ink);padding:6px 14px;border-radius:99px;box-shadow:0 3px 0 var(--cream-dk);text-align:center}
+.hostLine{display:flex;gap:10px;align-items:flex-end;width:100%}
+.face{flex:none;width:54px;height:54px;border-radius:50%;background:#3a2418 center/cover no-repeat;box-shadow:0 0 0 3px var(--cream)}
+.bubble{position:relative;background:var(--cream);color:var(--ink);border-radius:16px;padding:10px 14px;font-weight:700;font-size:15px;line-height:1.55;box-shadow:0 4px 0 var(--cream-dk);flex:1;min-width:0}
+.bubble small{display:block;font-size:12px;color:var(--red-dk);font-weight:900;margin-bottom:1px}
+.bubble::before{content:"";position:absolute;left:-8px;bottom:14px;border:8px solid transparent;border-right-color:var(--cream);border-left:0}
+.tTop{display:flex;flex-direction:column;align-items:center;width:100%}
+.tBottom{width:min(520px,100%);display:flex;flex-direction:column;gap:10px}
+@media (min-aspect-ratio:1/1) and (max-height:560px){
+  #vTitle{align-items:flex-end;justify-content:center;gap:10px;padding:max(58px,calc(env(safe-area-inset-top) + 52px)) max(16px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) 16px}
+  #vTitle .tTop,#vTitle .tBottom{width:min(420px,48vw)}
+  .noren .b{font-size:min(4.8vw,10vh,42px)}
+  .noren.en .b{font-size:min(3.4vw,7vh,30px)}
+  .noren .flap{padding:6px 6px 8px}
+  .noren .a{font-size:12px}
+  .hostLine .bubble{font-size:13px;padding:7px 12px}
+  .hostLine .face{width:44px;height:44px}
+  #vTitle .tagline{display:none}
+  #vTitle .btn{min-height:44px;font-size:16px}
+  #vTitle .btn.red{min-height:48px;font-size:18px}
+}
+
+/* ---------- 遊び方 */
+#vHow{justify-content:center}
+.panel{width:100%;background:rgba(29,19,16,.9);border-radius:18px;padding:16px;box-shadow:inset 0 0 0 2px rgba(255,244,224,.18);min-height:0;overflow:hidden}
+.panel h2{font-family:var(--disp);font-weight:400;font-size:24px;color:var(--gold);margin-bottom:10px;text-align:center}
+.steps{display:grid;gap:10px}
+.step{display:flex;gap:12px;align-items:center;font-weight:700;font-size:14px;line-height:1.45}
+.step b{color:var(--gold)}
+.step .ic{flex:none;width:52px;height:52px;border-radius:14px;background:#3a2418;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 2px rgba(255,244,224,.25)}
+.step .ic svg{width:40px;height:40px}
+.howNote{margin-top:10px;font-size:13px;font-weight:900;color:var(--gold);text-align:center}
+@media (max-height:700px){.step{font-size:12.5px;line-height:1.35}.step .ic{width:42px;height:42px}.step .ic svg{width:32px;height:32px}.panel h2{font-size:20px;margin-bottom:6px}.steps{gap:7px}}
+@media (min-aspect-ratio:1/1) and (max-height:560px){
+  #vHow{padding-top:max(10px,env(safe-area-inset-top))}
+  #vHow .wrap{width:min(860px,100%);display:grid;grid-template-columns:1fr 220px;gap:10px 14px;align-items:center}
+  #vHow .panel{grid-row:1/3;padding:10px 14px}
+  .steps{grid-template-columns:1fr 1fr;gap:8px 12px}
+  #vHow .panel h2{font-size:18px;margin-bottom:4px}
+}
+
+/* ---------- プレイ */
+#vPlay{padding:0;touch-action:none}
+#vPlay *{touch-action:none}
+.hud{position:absolute;left:max(10px,env(safe-area-inset-left));top:max(10px,env(safe-area-inset-top));display:flex;align-items:center;gap:8px;height:40px;pointer-events:none}
+.chip{display:flex;align-items:center;gap:6px;height:40px;padding:0 12px;border-radius:12px;background:rgba(29,19,16,.78);box-shadow:inset 0 0 0 2px rgba(255,244,224,.25);font-weight:900}
+.chip svg{width:22px;height:22px;flex:none}
+.chip b{font-family:var(--disp);font-weight:400;font-size:22px;min-width:1.4em;text-align:right;line-height:1}
+.chip.low b{color:#ff7a5c;animation:blink .5s steps(2) infinite}
+@keyframes blink{50%{opacity:.4}}
+.order{position:absolute;z-index:3;max-width:min(240px,60vw);background:var(--cream);color:var(--ink);border-radius:16px;padding:8px 12px;font-weight:900;font-size:17px;line-height:1.3;box-shadow:0 4px 0 var(--cream-dk),0 8px 16px rgba(0,0,0,.3);transform:translate(-50%,-100%);pointer-events:none;white-space:nowrap}
+.order small{display:block;font-size:11px;color:#7a5a3a;font-weight:900}
+.order::after{content:"";position:absolute;left:50%;bottom:-9px;margin-left:-8px;border:9px solid transparent;border-top-color:var(--cream);border-bottom:0}
+.order.hot{background:#ffd2c0;animation:shake .1s linear infinite}
+.order.hot::after{border-top-color:#ffd2c0}
+.order.wow{background:#fff0a0}
+.order.wow::after{border-top-color:#fff0a0}
+.order.big{font-family:var(--disp);font-weight:400;font-size:21px}
+@keyframes shake{0%{margin-left:-2px}50%{margin-left:2px}100%{margin-left:-2px}}
+/* 左のゲージ（茹で／湯切り度） */
+.gauge{position:absolute;left:max(12px,env(safe-area-inset-left));top:50%;transform:translateY(-50%);width:64px;height:min(46vh,300px);pointer-events:none;display:flex;flex-direction:column;align-items:center;gap:4px}
+.gauge .lab{font-weight:900;font-size:12px;background:rgba(29,19,16,.8);padding:2px 8px;border-radius:99px;white-space:nowrap}
+.gauge .tube{position:relative;flex:1;width:26px;border-radius:13px;background:rgba(0,0,0,.5);box-shadow:inset 0 0 0 2px rgba(255,244,224,.4);overflow:visible}
+.gauge .fill{position:absolute;left:3px;right:3px;bottom:3px;border-radius:10px;background:linear-gradient(#ffe08a,var(--soup));height:0}
+.gauge.yu .fill{background:linear-gradient(#bfe6ff,var(--blue))}
+.gauge .mk{position:absolute;left:-4px;width:34px;height:3px;background:rgba(255,244,224,.7);border-radius:2px}
+.gauge .mk i{position:absolute;left:38px;top:-9px;font-style:normal;font-weight:900;font-size:11px;white-space:nowrap;background:rgba(29,19,16,.75);padding:1px 6px;border-radius:99px;color:rgba(255,244,224,.85)}
+.gauge .mk.on{background:var(--gold);height:5px;box-shadow:0 0 10px var(--gold)}
+.gauge .mk.on i{background:var(--gold);color:var(--ink);font-size:13px;top:-10px}
+.gauge .num{font-family:var(--disp);font-size:18px;line-height:1;text-shadow:0 2px 4px #000}
+/* 強さメーター */
+.meter{position:absolute;left:50%;transform:translateX(-50%);bottom:max(86px,calc(env(safe-area-inset-bottom) + 82px));width:min(320px,calc(100vw - 32px));pointer-events:none}
+.meter .bar{position:relative;height:18px;border-radius:9px;overflow:hidden;display:flex;box-shadow:0 0 0 2px rgba(255,244,224,.5),0 4px 10px rgba(0,0,0,.4)}
+.meter .bar i{display:block;height:100%}
+.meter .z{display:flex;justify-content:space-between;font-weight:900;font-size:11px;margin-top:3px;text-shadow:0 1px 3px #000}
+.meter .z span{flex:none}
+.meter .needle{position:absolute;top:-6px;width:4px;height:30px;margin-left:-2px;background:#fff;border-radius:2px;box-shadow:0 0 0 2px var(--ink);transition:left .08s}
+.meter .wind{position:absolute;top:0;bottom:0;left:0;background:rgba(255,255,255,.35);pointer-events:none}
+#bAct{position:absolute;left:50%;transform:translateX(-50%);bottom:max(14px,calc(env(safe-area-inset-bottom) + 10px));width:min(240px,60vw);min-height:60px;z-index:5;touch-action:manipulation}
+#bAct:active{transform:translate(-50%,4px)}
+#bAct.ready{animation:pulse .6s ease-in-out infinite alternate}
+@keyframes pulse{to{filter:brightness(1.18);box-shadow:0 6px 0 var(--gold-dk),0 0 0 6px rgba(243,191,58,.35)}}
+.banner{position:absolute;left:0;right:0;top:26%;text-align:center;pointer-events:none;z-index:6}
+.banner b{display:inline-block;font-family:var(--disp);font-weight:400;font-size:clamp(34px,10vw,64px);color:#fff;-webkit-text-stroke:2px var(--ink);text-shadow:0 5px 0 var(--red-dk),0 0 24px rgba(0,0,0,.5);animation:pop .35s cubic-bezier(.2,1.6,.4,1) both;padding:0 12px;line-height:1.15}
+.banner.gold b{color:var(--gold);text-shadow:0 5px 0 var(--gold-dk),0 0 30px rgba(243,191,58,.8)}
+.banner.blue b{color:#bfe6ff;text-shadow:0 5px 0 #1a4a7a}
+.banner small{display:block;font-weight:900;font-size:15px;color:var(--cream);text-shadow:0 2px 4px #000;margin-top:4px}
+@keyframes pop{from{transform:scale(2.2);opacity:0}to{transform:none;opacity:1}}
+.tut{position:absolute;left:50%;top:max(58px,calc(env(safe-area-inset-top) + 56px));transform:translateX(-50%);z-index:4;display:flex;align-items:center;gap:8px;background:rgba(29,19,16,.88);padding:8px 14px;border-radius:99px;font-weight:900;font-size:14px;white-space:nowrap;pointer-events:none;box-shadow:inset 0 0 0 2px rgba(243,191,58,.6);max-width:calc(100vw - 20px)}
+.tut span{white-space:normal}
+.tut svg{width:30px;height:30px;flex:none;animation:flick .5s ease-in-out infinite alternate}
+@keyframes flick{from{transform:translateY(6px)}to{transform:translateY(-6px)}}
+.pop{position:fixed;z-index:16;font-family:var(--disp);font-size:26px;color:#fff;-webkit-text-stroke:1.5px var(--ink);text-shadow:0 3px 0 var(--ink);transform:translate(-50%,-50%);animation:popUp .9s ease-out forwards;pointer-events:none;white-space:nowrap}
+.pop.hot{color:#ff8a6a}.pop.good{color:#bfe6ff}.pop.gold{color:var(--gold);font-size:30px}.pop.meh{color:#c8b8a8;font-size:20px}
+@keyframes popUp{0%{transform:translate(-50%,-50%) scale(.4)}20%{transform:translate(-50%,-70%) scale(1.25)}100%{transform:translate(-50%,-150%) scale(1);opacity:0}}
+/* テレビ取材の枠 */
+.tvf{position:absolute;inset:max(56px,calc(env(safe-area-inset-top) + 52px)) 10px max(10px,env(safe-area-inset-bottom)) 10px;pointer-events:none;z-index:2}
+.tvf i{position:absolute;width:36px;height:36px;border:4px solid rgba(255,255,255,.85)}
+.tvf i:nth-child(1){left:0;top:0;border-right:0;border-bottom:0}.tvf i:nth-child(2){right:0;top:0;border-left:0;border-bottom:0}
+.tvf i:nth-child(3){left:0;bottom:0;border-right:0;border-top:0}.tvf i:nth-child(4){right:0;bottom:0;border-left:0;border-top:0}
+.tvf .live{position:absolute;right:46px;top:6px;display:flex;align-items:center;gap:6px;background:#e0261c;color:#fff;font-weight:900;font-size:13px;padding:4px 10px;border-radius:6px;letter-spacing:.06em}
+.tvf .live::before{content:"";width:9px;height:9px;border-radius:50%;background:#fff;animation:blink .8s steps(2) infinite}
+@media (min-aspect-ratio:1/1) and (max-height:560px){
+  #bAct{left:auto;right:max(12px,env(safe-area-inset-right));transform:none;width:min(180px,26vw);min-height:54px}
+  #bAct:active{transform:translateY(4px)}
+  .meter{left:auto;right:max(12px,env(safe-area-inset-right));transform:none;width:min(220px,30vw);bottom:max(82px,calc(env(safe-area-inset-bottom) + 78px))}
+  .tut{left:auto;right:max(12px,env(safe-area-inset-right));transform:none;top:auto;bottom:max(150px,calc(env(safe-area-inset-bottom) + 146px));font-size:12px;width:min(260px,32vw);border-radius:16px;white-space:normal}
+  .gauge{height:min(56vh,230px);top:calc(50% + 20px)}
+  .banner{top:18%}
+  .banner b{font-size:clamp(28px,6vw,48px)}
+}
+@media (max-height:700px) and (max-aspect-ratio:1/1){.gauge{height:min(38vh,220px)}.meter{bottom:max(80px,calc(env(safe-area-inset-bottom) + 76px))}#bAct{min-height:54px}.tut{font-size:13px}}
+
+/* ---------- 結果 */
+#vResult{padding-top:max(54px,calc(env(safe-area-inset-top) + 50px));gap:8px}
+#vResult .wrap{width:min(540px,100%);height:100%;gap:8px;justify-content:center}
+.rHead{font-family:var(--disp);font-weight:400;font-size:clamp(20px,5.6vw,28px);color:var(--gold);text-shadow:0 3px 0 rgba(0,0,0,.4);flex:none}
+.stats{width:100%;display:grid;grid-template-columns:1fr 1fr;gap:6px;flex:none}
+.st{background:rgba(29,19,16,.85);border-radius:12px;padding:6px 10px;box-shadow:inset 0 0 0 2px rgba(255,244,224,.16);display:flex;align-items:center;justify-content:space-between;gap:6px;opacity:0;transform:translateY(8px);transition:opacity .2s,transform .3s cubic-bezier(.2,1.5,.4,1)}
+.st.on{opacity:1;transform:none}
+.st span{font-weight:900;font-size:12px;opacity:.9}
+.st b{font-family:var(--disp);font-weight:400;font-size:24px;line-height:1.1;white-space:nowrap}
+.st b small{font-family:'Zen Maru Gothic',sans-serif;font-weight:900;font-size:13px;margin-left:2px}
+.st.wide{grid-column:1/3}
+.st.wide b{color:var(--gold);font-size:28px}
+.st.bad b{color:#7ec8ff}
+.tvHead{width:100%;flex:none;background:#fff;color:#111;border-radius:6px;padding:6px 10px;font-weight:900;font-size:14px;display:flex;gap:8px;align-items:center;opacity:0;transition:opacity .3s;border-left:8px solid #e0261c}
+.tvHead.on{opacity:1}
+.tvHead i{font-style:normal;background:#e0261c;color:#fff;font-size:11px;padding:2px 6px;border-radius:4px;flex:none}
+.rank{flex:none;display:flex;align-items:center;justify-content:center;gap:12px;min-height:96px;opacity:0;width:100%}
+.rank.on{opacity:1}
+.stamp{flex:none;width:96px;height:96px;position:relative}
+.rank.on .stamp{animation:slam .45s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes slam{from{transform:scale(3) rotate(-30deg);opacity:0}to{transform:rotate(-12deg);opacity:1}}
+.stamp svg{width:100%;height:100%;display:block}
+.rankTxt{text-align:left;min-width:0}
+.rankTxt .k{font-weight:900;font-size:13px;opacity:.9}
+.rankTxt .n{font-family:var(--disp);font-weight:400;font-size:clamp(26px,8vw,40px);line-height:1.1;color:#fff;text-shadow:0 3px 0 rgba(0,0,0,.45)}
+.rankTxt .t{font-weight:900;font-size:14px;color:var(--gold)}
+.tier-gold .rankTxt .n{color:var(--gold)}
+.tier-black .rankTxt .n{color:#7ec8ff}
+.voices{width:100%;display:flex;flex-direction:column;gap:5px;min-height:0;overflow:hidden;flex:0 1 auto}
+.vc{display:flex;gap:8px;align-items:center;opacity:0;transition:opacity .25s}
+.vc.on{opacity:1}
+.vc .fc{flex:none;width:36px;height:36px;border-radius:50%;background:#3a2418 center/cover no-repeat;box-shadow:0 0 0 2px var(--cream)}
+.vc p{flex:1;min-width:0;background:var(--cream);color:var(--ink);border-radius:12px;padding:5px 10px;font-weight:900;font-size:13px;line-height:1.35;box-shadow:0 3px 0 var(--cream-dk)}
+.vc p small{font-size:10px;color:var(--red-dk);margin-right:6px}
+.rBtns{flex:none;width:100%;display:flex;flex-direction:column;gap:8px}
+.rBtns .btn{white-space:nowrap}
+#bSave{font-size:16px;padding:0 10px}
+.skip{position:absolute;left:0;right:0;bottom:max(10px,env(safe-area-inset-bottom));text-align:center;font-size:12px;font-weight:900;opacity:.75;pointer-events:none}
+@media (max-height:700px){.btn{min-height:46px;font-size:16px}.btn.red{min-height:50px;font-size:18px}.btn.ghost{min-height:40px;font-size:14px}.rank{min-height:72px}.stamp{width:72px;height:72px}.st b{font-size:20px}.st.wide b{font-size:22px}.vc:nth-child(n+3){display:none}.vc .fc{width:30px;height:30px}.vc p{font-size:12px}}
+@media (min-aspect-ratio:1/1) and (max-height:560px){
+  #vResult{padding:max(10px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+  #vResult .wrap{width:100%;max-width:900px;display:grid;grid-template-columns:1fr minmax(240px,320px);grid-template-rows:auto auto auto minmax(0,1fr);gap:6px 18px;align-content:center}
+  .rHead{grid-column:1;justify-self:start}
+  .stats{grid-column:1}
+  .tvHead{grid-column:1}
+  .voices{grid-column:1}
+  .rSide{grid-column:2;grid-row:1/5;display:flex;flex-direction:column;gap:8px;justify-content:center;padding-top:44px}
+  .vc:nth-child(n+3){display:none}
+}
+.rSide{display:contents}
+@media (min-aspect-ratio:1/1) and (max-height:560px){.rSide{display:flex}}
+body.party #fx::before{content:"";position:absolute;inset:-20% 0 0 0;background-image:radial-gradient(circle,var(--gold) 3px,transparent 4px),radial-gradient(circle,#ff6a5a 3px,transparent 4px),radial-gradient(circle,#6ad1ff 3px,transparent 4px);background-size:90px 110px,70px 130px,110px 90px;background-position:0 0,30px 40px,60px 10px;animation:confetti 2.4s linear infinite}
+@keyframes confetti{to{transform:translateY(20%)}}
+body.rain #fx::before{content:"";position:absolute;inset:-20% 0 0 0;background-image:radial-gradient(1.5px 9px at 50% 50%,rgba(126,200,255,.75),transparent),radial-gradient(1.5px 7px at 50% 50%,rgba(126,200,255,.6),transparent);background-size:37px 61px,53px 43px;background-position:0 0,19px 27px;animation:confetti .7s linear infinite}
+.toast{position:fixed;left:50%;bottom:22%;transform:translateX(-50%);background:rgba(29,19,16,.92);color:var(--cream);padding:10px 18px;border-radius:99px;font-weight:900;z-index:80;box-shadow:inset 0 0 0 2px rgba(255,244,224,.3)}
+#boot-err{position:fixed;inset:auto 8px 8px 8px;z-index:99;background:#fff;color:#b00;font:12px/1.4 monospace;white-space:pre-wrap;padding:10px;border-radius:8px}
+</style>
+</head>
+<body>
+<canvas id="world"></canvas>
+<div id="shade"></div>
+<div id="fx"></div>
+
+<div id="corner">
+  <button id="bLang" aria-label="language"><span id="langTxt">EN</span></button>
+  <button id="bMute" aria-label="sound">
+    <svg id="icOn" viewBox="0 0 24 24"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>
+    <svg id="icOff" viewBox="0 0 24 24" hidden><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>
+  </button>
+</div>
+
+<main class="view" id="vTitle">
+  <div class="tTop">
+    <div class="noren" id="noren">
+      <div class="flap"><div class="a" data-t="titleA">ラーメン</div><div class="b" id="logoB"><span>湯切り</span></div></div>
+      <div class="flap"><div class="a">&nbsp;</div><div class="b" id="logoC">職人</div></div>
+    </div>
+    <div class="tagline" data-t="sub">気合を入れすぎると、お客さんにかかる。</div>
+  </div>
+  <div class="tBottom">
+    <div class="hostLine"><div class="face" data-face="oyakata"></div><div class="bubble"><small data-t="host">親方</small><span data-t="hostLine"></span></div></div>
+    <button class="btn red" id="bStart"><svg viewBox="0 0 24 24"><path d="M7 4l12 8-12 8z" fill="currentColor"/></svg><span data-t="start">店に立つ</span></button>
+    <button class="btn ghost" id="bHow"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.3-1 .9-1 1.7M12 17h.01"/></svg><span data-t="how">遊び方</span></button>
+  </div>
+</main>
+
+<main class="view" id="vHow" hidden>
+  <div class="wrap">
+    <div class="panel">
+      <h2 data-t="howTitle">遊び方</h2>
+      <div class="steps">
+        <div class="step"><div class="ic"><svg viewBox="0 0 48 48"><path d="M8 22h32v14a6 6 0 0 1-6 6H14a6 6 0 0 1-6-6z" fill="#8a8f98"/><path d="M8 22h32" stroke="#cfd4da" stroke-width="3"/><path d="M14 18q4-6 8 0M26 18q4-6 8 0" stroke="#fff4e0" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".7"/><path d="M24 4v12M19 9l5-5 5 5" stroke="#f3bf3a" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div><span id="how1"></span></div>
+        <div class="step"><div class="ic"><svg viewBox="0 0 48 48"><path d="M16 14h16l-3 16H19z" fill="#cfd4da" stroke="#26160e" stroke-width="2"/><path d="M24 14V4" stroke="#8a5a2a" stroke-width="4" stroke-linecap="round"/><path d="M8 10v24M4 14l4-4 4 4M4 30l4 4 4-4" stroke="#f3bf3a" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="34" cy="38" r="2" fill="#4fb3ff"/><circle cx="28" cy="42" r="2" fill="#4fb3ff"/><circle cx="20" cy="40" r="2" fill="#4fb3ff"/></svg></div><span id="how2"></span></div>
+        <div class="step"><div class="ic"><svg viewBox="0 0 48 48"><circle cx="34" cy="28" r="9" fill="#f0c49a"/><path d="M30 26l3 2-3 2M38 26l-3 2 3 2" stroke="#26160e" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M6 20q8-10 18-2" stroke="#4fb3ff" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="2 4"/><circle cx="25" cy="22" r="3" fill="#4fb3ff"/><path d="M40 12q2-4 0-8M34 14q2-4 0-8" stroke="#ff7a5c" stroke-width="2" fill="none" stroke-linecap="round"/></svg></div><span data-th="how3" id="how3"></span></div>
+        <div class="step"><div class="ic"><svg viewBox="0 0 48 48"><path d="M24 4v30" stroke="#f3bf3a" stroke-width="3" stroke-dasharray="3 3"/><path d="M17 34h14l-3 10H20z" fill="#cfd4da" stroke="#26160e" stroke-width="2"/><path d="M10 10l3 3M38 10l-3 3M6 24h4M38 24h4" stroke="#f3bf3a" stroke-width="3" stroke-linecap="round"/><path d="M18 4l6-2 6 2" stroke="#fff4e0" stroke-width="3" fill="none" stroke-linecap="round"/></svg></div><span id="how4"></span></div>
+      </div>
+      <p class="howNote" data-t="howNote"></p>
+    </div>
+    <button class="btn red" id="bHowStart"><svg viewBox="0 0 24 24"><path d="M7 4l12 8-12 8z" fill="currentColor"/></svg><span data-t="start">店に立つ</span></button>
+    <button class="btn ghost" id="bHowBack"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg><span data-t="back">もどる</span></button>
+  </div>
+</main>
+
+<main class="view" id="vPlay" hidden>
+  <div class="tvf" id="tvf" hidden><i></i><i></i><i></i><i></i><div class="live" data-t="tvBadge">LIVE 全国放送</div></div>
+  <div class="hud">
+    <div class="chip" id="cTime"><svg viewBox="0 0 24 24" fill="none" stroke="#fff4e0" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg><b id="tLeft">60</b></div>
+    <div class="chip"><svg viewBox="0 0 24 24"><path d="M3 11h18c0 6-4 10-9 10s-9-4-9-10z" fill="#d6372b"/><path d="M6 9q2-5 4 0t4 0t4 0" stroke="#f3bf3a" stroke-width="2" fill="none" stroke-linecap="round"/></svg><b id="nBowls">0</b></div>
+  </div>
+  <div class="gauge" id="gauge"><div class="lab" id="gLab">茹で</div><div class="tube" id="gTube"><div class="fill" id="gFill"></div></div><div class="num" id="gNum"></div></div>
+  <div class="order" id="order" hidden></div>
+  <div class="banner" id="banner" hidden></div>
+  <div class="meter" id="meter" hidden><div class="bar" id="mBar"></div><div class="wind" id="mWind"></div><div class="needle" id="mNeedle"></div><div class="z" id="mZ"></div></div>
+  <div class="tut" id="tut" hidden><svg viewBox="0 0 32 32"><path d="M12 30V14a2.5 2.5 0 0 1 5 0v6l7 1.5c1.5.4 2.4 1.8 2.1 3.3L25 30" fill="#fff4e0" stroke="#26160e" stroke-width="1.6" stroke-linejoin="round"/><path d="M6 4v10M3 7l3-3 3 3M3 11l3 3 3-3" stroke="#f3bf3a" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg><span id="tutTxt"></span></div>
+  <button class="btn gold" id="bAct"><svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg><span id="actTxt">上げる</span></button>
+</main>
+
+<main class="view" id="vResult" hidden>
+  <div class="wrap">
+    <div class="rHead" data-t="resHead">本日の営業結果</div>
+    <div class="stats" id="stats"></div>
+    <div class="tvHead" id="tvHead" hidden><i>TV</i><span id="tvHeadTxt"></span></div>
+    <div class="voices" id="voices"></div>
+    <div class="rSide">
+      <div class="rank" id="rank"><div class="stamp" id="stamp"></div><div class="rankTxt"><div class="k" data-t="resRank">本日の称号</div><div class="n" id="rankN"></div><div class="t" id="rankT"></div></div></div>
+      <div class="rBtns">
+        <button class="btn red" id="bAgain"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.5-5.8M4 4v5h5"/></svg><span data-t="again">もう一回</span></button>
+        <div class="row">
+          <button class="btn gold" id="bSave"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 19h14"/></svg><span id="saveTxt">結果画像を保存</span></button>
+          <button class="btn ghost" id="bTitle" aria-label="title" style="flex:0 0 54px;width:54px;padding:0"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7M6 10v10h12V10"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="skip" id="skip" data-t="tapSkip"></div>
+</main>
+
+<script>
+(function(){
+  var opt={passive:false};
+  ['gesturestart','gesturechange','gestureend'].forEach(function(n){document.addEventListener(n,function(e){e.preventDefault()},opt)});
+  document.addEventListener('touchmove',function(e){if(e.touches&&e.touches.length>1)e.preventDefault()},opt);
+  var last=0;document.addEventListener('touchend',function(e){var n=Date.now();if(n-last<300&&!(e.target.closest&&e.target.closest('button,a')))e.preventDefault();last=n},opt);
+  document.addEventListener('dblclick',function(e){e.preventDefault()},opt);
+  window.addEventListener('wheel',function(e){if(e.ctrlKey)e.preventDefault()},opt);
+  window.addEventListener('keydown',function(e){if((e.ctrlKey||e.metaKey)&&['+','-','=','0',';'].indexOf(e.key)>=0)e.preventDefault()});
+})();
+(function(){
+  var errs=[];
+  window.addEventListener('error',function(e){errs.push((e.message||'error')+' @'+(e.filename||'')+':'+(e.lineno||''))});
+  window.addEventListener('unhandledrejection',function(e){errs.push('reject: '+(e.reason&&e.reason.message||e.reason))});
+  setTimeout(function(){
+    if(window.__ymReady) return;
+    var d=document.createElement('div');d.id='boot-err';
+    d.textContent='起動できませんでした / failed to start\n'+(errs.join('\n')||'(no error captured)')+'\n'+navigator.userAgent;
+    document.body.appendChild(d);
+  },6000);
+})();
+</script>
+<script src="data.js?v=1"></script>
+<script src="snd.js?v=1"></script>
+<script type="module" src="game.js?v=1"></script>
+</body>
+</html>
