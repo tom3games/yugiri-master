@@ -862,6 +862,11 @@ async function drawCard() {
   x.textAlign = 'right'; x.fillStyle = 'rgba(255,244,224,.7)'; x.font = `900 24px ${BODY}`; x.fillText(T('cardFoot'), 1040, 1336)
   return c
 }
+// Xでポスト（クリックの中で同期的に開く。URL は url パラメータで渡す）
+const GAME_URL = 'https://tom3games.github.io/yugiri-master/'
+function xText() { const R = S.result; if (!R) return ''; return fmt(T('xText'), { rank: L(R.rank), n: R.served, p: R.total }) + ' ' + T('xTag') }
+function xIntent() { return 'https://x.com/intent/post?text=' + encodeURIComponent(xText()) + '&url=' + encodeURIComponent(GAME_URL) }
+function postX() { if (!S.result) return; window.open(xIntent(), '_blank', 'noopener') }
 const canShareFiles = () => { try { return !!(navigator.canShare && navigator.share && isTouch() && navigator.canShare({ files: [new File([new Blob(['x'])], 'a.png', { type: 'image/png' })] })) } catch (e) { return false } }
 async function cardBlob() { const c = await drawCard(); return new Promise(r => c.toBlob(r, 'image/png')) }
 async function saveImage() {
@@ -956,6 +961,7 @@ function boot() {
   on('#bHowBack', () => { Snd.sfx('tap'); go('title') })
   on('#bAgain', () => { Snd.sfx('tap'); startGame() })
   on('#bSave', () => saveImage())
+  on('#bX', () => { Snd.sfx('tap'); postX() })
   on('#bTitle', () => { Snd.sfx('tap'); S.mode = 'off'; go('title') })
   on('#bAct', () => pushIn({ type: 'act' }))
   on('#bLang', () => { S.lang = S.lang === 'ja' ? 'en' : 'ja'; try { localStorage.setItem('ym.lang', S.lang) } catch (e) {} applyLang() })
@@ -975,7 +981,7 @@ function boot() {
 
 // 検証用の窓口
 window.ym = {
-  S, ORDERS, RANKS, BOTS, custs, startGame, go, drawCard, saveImage, fitCamera, skipReveal, cardBlob, Snd, record, keyS,
+  S, ORDERS, RANKS, BOTS, custs, startGame, go, drawCard, saveImage, xText, xIntent, postX, GAME_URL, fitCamera, skipReveal, cardBlob, Snd, record, keyS,
   setLang: l => { S.lang = l; applyLang() },
   project: (x, y, z) => { tmpV.set(x, y, z).project(camera); return { x: (tmpV.x + 1) / 2 * innerWidth, y: (1 - tmpV.y) / 2 * innerHeight, z: tmpV.z } },
   stuckN: () => stuck.length,

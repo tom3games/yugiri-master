@@ -54,6 +54,16 @@ const variance3d = p => p.evaluate(() => {
   let s = 0, s2 = 0, n = 0; for (let i = 0; i < d.length; i += 4 * 3) { const v = d[i] * .3 + d[i + 1] * .59 + d[i + 2] * .11; s += v; s2 += v * v; n++ }
   return Math.round(s2 / n - (s / n) ** 2)
 })
+// Xでポスト: 押すと新しいタブで x.com/intent/post が開く（x.com は偽の応答で受ける）
+async function xPost(pg) {
+  await pg.context().route('https://x.com/**', r => r.fulfill({ status: 200, contentType: 'text/html', body: '<title>x</title>ok' }))
+  const b = await pg.evaluate(() => { const el = document.querySelector('#bX'), r = el.getBoundingClientRect(); return { vis: !!el.offsetParent && getComputedStyle(el.closest('.rBtns') || el).visibility !== 'hidden' && r.width > 60 && r.height >= 38, clip: el.scrollWidth > el.clientWidth + 1, label: el.innerText.trim() } })
+  const [pop] = await Promise.all([pg.waitForEvent('popup', { timeout: 6000 }), pg.click('#bX')])
+  await pop.waitForLoadState().catch(() => {}); const url = pop.url(); await pop.close()
+  const u = new URL(url), api = await pg.evaluate(() => ({ text: ym.xText(), url: ym.GAME_URL }))
+  return { b, url, text: u.searchParams.get('text'), link: u.searchParams.get('url'), api }
+}
+const clipped = q => q.evaluate(() => [...document.querySelectorAll('main:not([hidden]) button')].filter(b => b.offsetParent && b.scrollWidth > b.clientWidth + 1).map(b => b.id))
 const SIZES = [[360, 640, 'small'], [390, 844, 'phone'], [844, 390, 'land'], [667, 375, 'land-se'], [768, 1024, 'tab'], [1440, 900, 'pc']]
 const toPhase = (p, ph) => p.evaluate(ph => { ym.dbg.pause(true); return ym.dbg.toPhase(ph) }, ph)
 // 本物のマウスで上下に振る（実時間で動かす。dy は画面の高さに対する割合）
@@ -180,6 +190,10 @@ await t('結果画像（1080x1350）を保存できる', async () => {
   const dim = await q.evaluate(async () => { const c = await ym.drawCard(); return [c.width, c.height] })
   expect(d.suggestedFilename() === 'yugiri-master.png' && size > 150000 && dim[0] === 1080 && dim[1] === 1350, JSON.stringify({ f: d.suggestedFilename(), size, dim })); return { size }
 })
+await t('Xでポスト: ボタンが見えて、押すと x.com/intent/post が開く（text に称号とハッシュタグ、url に公開URL）', async () => {
+  const r = await xPost(q), rank = await q.evaluate(() => document.querySelector('#rankN').textContent)
+  expect(r.b.vis && !r.b.clip && r.b.label === 'Xでポスト' && r.url.startsWith('https://x.com/intent/post?') && r.text.includes('「' + rank + '」') && r.text.includes('#湯切り職人') && /\d+杯/.test(r.text) && !r.text.includes('tom3games') && r.link === 'https://tom3games.github.io/yugiri-master/' && r.text === r.api.text && r.link === r.api.url, r); return r.text
+})
 await t('もう一回ですぐ遊べる（天井の麺も片付く）', async () => { await q.click('#bAgain'); const r = await q.evaluate(() => ({ v: ym.S.view, ph: ym.S.ph, res: ym.S.results.length, left: ym.S.left, stuck: ym.stuckN() })); expect(r.v === 'play' && r.res === 0 && r.left === 60 && r.stuck === 0, JSON.stringify(r)); return r })
 await t('通しでエラーなし', async () => { expect(q.errs.length === 0, q.errs.join('|')) })
 await q.close()
@@ -263,6 +277,8 @@ await t('英語表示（タイトル・遊び方・プレイ・結果に日本�
   await e.evaluate(() => { ym.dbg.autoplay('normal'); ym.dbg.quiet(true); ym.startGame(77, { tv: true }); let k = 0; while (ym.S.view !== 'result' && k++ < 60 * 120) ym.dbg.step(1); ym.dbg.step(60 * 5); ym.dbg.quiet(false) }); await e.waitForTimeout(600)
   const rt = await e.evaluate(() => document.querySelector('#vResult').innerText); await e.screenshot({ path: `${ROOT}/shots/en-result.png` })
   const card = await e.evaluate(async () => { const c = await ym.drawCard(); return c.width })
+  const x = await xPost(e), rank = await e.evaluate(() => document.querySelector('#rankN').textContent)
+  expect(x.b.vis && !x.b.clip && x.b.label === 'Post on X' && x.url.startsWith('https://x.com/intent/post?') && x.text.includes(rank) && x.text.includes('#NoodleFlickMaster') && !jp.test(x.text) && x.link === 'https://tom3games.github.io/yugiri-master/', x)
   const bad = [tt, ht, pt, rt].filter(x => jp.test(x)).map(x => x.match(/.{0,8}[぀-ヿ一-鿿].{0,8}/)[0])
   expect(!bad.length && card === 1080 && e.errs.length === 0, JSON.stringify(bad) + e.errs.join('|')); return rt.slice(0, 60).replace(/\n/g, ' / ')
 })
@@ -286,6 +302,7 @@ for (const [w, h, name] of SIZES) {
     const inside = o => o.x > 60 && o.x < r.W - 10 && o.y > 50 && o.y < r.H - 60
     expect(inside(r.pot) && inside(r.head), JSON.stringify(r)); return { pot: [Math.round(r.pot.x), Math.round(r.pot.y)], head: [Math.round(r.head.x), Math.round(r.head.y)] }
   })
+  await t(`${name}: 結果のボタン（Xでポスト含む）の文字が切れない`, async () => { const c = await clipped(v), x = await v.evaluate(() => !!document.querySelector('#bX').offsetParent); expect(!c.length && x, c) })
   await t(`${name}: はみ出し・エラーなし`, async () => { const o = await overflow(v); expect(o.sw <= o.W && !o.bad.length && !v.errs.length, JSON.stringify(o) + v.errs.join('|')) })
   await v.close()
 }

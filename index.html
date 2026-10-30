@@ -220,7 +220,11 @@ body.dim #shade{opacity:1}
 .vc p small{font-size:10px;color:var(--red-dk);margin-right:6px}
 .rBtns{flex:none;width:100%;display:flex;flex-direction:column;gap:8px}
 .rBtns .btn{white-space:nowrap}
-#bSave{font-size:16px;padding:0 10px}
+#bSave,#bX{font-size:16px;padding:0 10px;gap:8px}
+.btn.xpost{background:linear-gradient(#2b2b2b,#000);color:#fff;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.28),0 6px 0 #3c3c3c,0 12px 22px rgba(0,0,0,.35)}
+.btn.xpost::before{opacity:.35}
+.btn.xpost:active{box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.28),0 1px 0 #3c3c3c}
+.btn.xpost svg{fill:currentColor;stroke:none;width:20px;height:20px}
 .skip{position:absolute;left:0;right:0;bottom:max(10px,env(safe-area-inset-bottom));text-align:center;font-size:12px;font-weight:900;opacity:.75;pointer-events:none}
 @media (max-height:700px){.btn{min-height:46px;font-size:16px}.btn.red{min-height:50px;font-size:18px}.btn.ghost{min-height:40px;font-size:14px}.rank{min-height:72px}.stamp{width:72px;height:72px}.st b{font-size:20px}.st.wide b{font-size:22px}.vc:nth-child(n+3){display:none}.vc .fc{width:30px;height:30px}.vc p{font-size:12px}}
 @media (min-aspect-ratio:1/1) and (max-height:560px){
@@ -310,10 +314,13 @@ body.rain #fx::before{content:"";position:absolute;inset:-20% 0 0 0;background-i
     <div class="rSide">
       <div class="rank" id="rank"><div class="stamp" id="stamp"></div><div class="rankTxt"><div class="k" data-t="resRank">本日の称号</div><div class="n" id="rankN"></div><div class="t" id="rankT"></div></div></div>
       <div class="rBtns">
-        <button class="btn red" id="bAgain"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.5-5.8M4 4v5h5"/></svg><span data-t="again">もう一回</span></button>
         <div class="row">
-          <button class="btn gold" id="bSave"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 19h14"/></svg><span id="saveTxt">結果画像を保存</span></button>
+          <button class="btn red" id="bAgain"><svg viewBox="0 0 24 24"><path d="M4 12a8 8 0 1 0 2.5-5.8M4 4v5h5"/></svg><span data-t="again">もう一回</span></button>
           <button class="btn ghost" id="bTitle" aria-label="title" style="flex:0 0 54px;width:54px;padding:0"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7M6 10v10h12V10"/></svg></button>
+        </div>
+        <div class="row">
+          <button class="btn gold" id="bSave"><svg viewBox="0 0 24 24"><path d="M12 4v11M7 10l5 5 5-5M5 19h14"/></svg><span id="saveTxt">画像を保存</span></button>
+          <button class="btn xpost" id="bX"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg><span data-t="post">Xでポスト</span></button>
         </div>
       </div>
     </div>
@@ -343,8 +350,8 @@ body.rain #fx::before{content:"";position:absolute;inset:-20% 0 0 0;background-i
   },6000);
 })();
 </script>
-<script src="data.js?v=1"></script>
-<script src="snd.js?v=1"></script>
-<script type="module" src="game.js?v=1"></script>
+<script src="data.js?v=2"></script>
+<script src="snd.js?v=2"></script>
+<script type="module" src="game.js?v=2"></script>
 </body>
 </html>
