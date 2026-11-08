@@ -93,7 +93,7 @@ await t('ブラウザの拡大が起きない（viewport・ピンチ・Ctrl+ホ�
 })
 await t('OGP 一式がある（og:image は ?v= 付きの公開URL）', async () => {
   const r = await p.evaluate(() => ({ has: ['og:title', 'og:description', 'og:image', 'og:url', 'og:type'].map(k => !!document.querySelector(`meta[property="${k}"]`)).concat(document.querySelector('meta[name="twitter:card"]')?.content === 'summary_large_image'), img: document.querySelector('meta[property="og:image"]').content, url: document.querySelector('meta[property="og:url"]').content }))
-  expect(r.has.every(Boolean) && r.img === 'https://tom3games.github.io/yugiri-master/og.png?v=1' && r.url === 'https://tom3games.github.io/yugiri-master/', JSON.stringify(r))
+  expect(r.has.every(Boolean) && r.img === 'https://tom3games.com/play/yugiri-master/og.png?v=1' && r.url === 'https://tom3games.com/play/yugiri-master/', JSON.stringify(r))
 })
 await t('og.png が 1200x630', async () => { const r = await p.evaluate(async () => { const im = new Image(); im.src = 'og.png'; await im.decode(); return [im.naturalWidth, im.naturalHeight] }); expect(r[0] === 1200 && r[1] === 630, r); return r })
 await t('タイトルの3D（ラーメン屋）が描けている', async () => { await p.waitForTimeout(1500); const v = await variance3d(p); expect(v > 300, v); return v })
