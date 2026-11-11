@@ -37,7 +37,7 @@ button{font-family:inherit;color:inherit;font-size:inherit}
 #shade{position:fixed;inset:0;z-index:5;pointer-events:none;opacity:0;transition:opacity .5s;background:radial-gradient(120% 90% at 50% 40%,rgba(29,19,16,.55),rgba(14,8,6,.88))}
 body.dim #shade{opacity:1}
 
-.view{position:fixed;inset:0;z-index:10;height:100svh;overflow:hidden;display:flex;flex-direction:column;align-items:center;padding:max(58px,calc(env(safe-area-inset-top) + 52px)) 16px max(16px,calc(env(safe-area-inset-bottom) + 12px));gap:12px}
+.view{position:fixed;inset:0;z-index:10;height:100svh;overflow:hidden;display:flex;flex-direction:column;align-items:center;padding:max(58px,calc(env(safe-area-inset-top) + 52px)) 16px max(16px,calc(calc(env(safe-area-inset-bottom) + var(--inapp-bot,0px)) + 12px));gap:12px}
 .wrap{width:min(520px,100%);display:flex;flex-direction:column;align-items:center;gap:clamp(8px,1.6vh,14px);min-height:0;max-height:100%}
 .view:not([hidden]) .wrap{animation:enter .35s cubic-bezier(.2,.8,.2,1) both}
 @keyframes enter{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
@@ -82,7 +82,7 @@ body.dim #shade{opacity:1}
 .tTop{display:flex;flex-direction:column;align-items:center;width:100%}
 .tBottom{width:min(520px,100%);display:flex;flex-direction:column;gap:10px}
 @media (min-aspect-ratio:1/1) and (max-height:560px){
-  #vTitle{align-items:flex-end;justify-content:center;gap:10px;padding:max(58px,calc(env(safe-area-inset-top) + 52px)) max(16px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) 16px}
+  #vTitle{align-items:flex-end;justify-content:center;gap:10px;padding:max(58px,calc(env(safe-area-inset-top) + 52px)) max(16px,env(safe-area-inset-right)) max(12px,calc(env(safe-area-inset-bottom) + var(--inapp-bot,0px))) 16px}
   #vTitle .tTop,#vTitle .tBottom{width:min(420px,48vw)}
   .noren .b{font-size:min(4.8vw,10vh,42px)}
   .noren.en .b{font-size:min(3.4vw,7vh,30px)}
@@ -144,14 +144,14 @@ body.dim #shade{opacity:1}
 .gauge .mk.on i{background:var(--gold);color:var(--ink);font-size:13px;top:-10px}
 .gauge .num{font-family:var(--disp);font-size:18px;line-height:1;text-shadow:0 2px 4px #000}
 /* 強さメーター */
-.meter{position:absolute;left:50%;transform:translateX(-50%);bottom:max(86px,calc(env(safe-area-inset-bottom) + 82px));width:min(320px,calc(100vw - 32px));pointer-events:none}
+.meter{position:absolute;left:50%;transform:translateX(-50%);bottom:max(86px,calc(calc(env(safe-area-inset-bottom) + var(--inapp-bot,0px)) + 82px));width:min(320px,calc(100vw - 32px));pointer-events:none}
 .meter .bar{position:relative;height:18px;border-radius:9px;overflow:hidden;display:flex;box-shadow:0 0 0 2px rgba(255,244,224,.5),0 4px 10px rgba(0,0,0,.4)}
 .meter .bar i{display:block;height:100%}
 .meter .z{display:flex;justify-content:space-between;font-weight:900;font-size:11px;margin-top:3px;text-shadow:0 1px 3px #000}
 .meter .z span{flex:none}
 .meter .needle{position:absolute;top:-6px;width:4px;height:30px;margin-left:-2px;background:#fff;border-radius:2px;box-shadow:0 0 0 2px var(--ink);transition:left .08s}
 .meter .wind{position:absolute;top:0;bottom:0;left:0;background:rgba(255,255,255,.35);pointer-events:none}
-#bAct{position:absolute;left:50%;transform:translateX(-50%);bottom:max(14px,calc(env(safe-area-inset-bottom) + 10px));width:min(240px,60vw);min-height:60px;z-index:5;touch-action:manipulation}
+#bAct{position:absolute;left:50%;transform:translateX(-50%);bottom:max(14px,calc(calc(env(safe-area-inset-bottom) + var(--inapp-bot,0px)) + 10px));width:min(240px,60vw);min-height:60px;z-index:5;touch-action:manipulation}
 #bAct:active{transform:translate(-50%,4px)}
 #bAct.ready{animation:pulse .6s ease-in-out infinite alternate}
 @keyframes pulse{to{filter:brightness(1.18);box-shadow:0 6px 0 var(--gold-dk),0 0 0 6px rgba(243,191,58,.35)}}
@@ -169,7 +169,7 @@ body.dim #shade{opacity:1}
 .pop.hot{color:#ff8a6a}.pop.good{color:#bfe6ff}.pop.gold{color:var(--gold);font-size:30px}.pop.meh{color:#c8b8a8;font-size:20px}
 @keyframes popUp{0%{transform:translate(-50%,-50%) scale(.4)}20%{transform:translate(-50%,-70%) scale(1.25)}100%{transform:translate(-50%,-150%) scale(1);opacity:0}}
 /* テレビ取材の枠 */
-.tvf{position:absolute;inset:max(56px,calc(env(safe-area-inset-top) + 52px)) 10px max(10px,env(safe-area-inset-bottom)) 10px;pointer-events:none;z-index:2}
+.tvf{position:absolute;inset:max(56px,calc(env(safe-area-inset-top) + 52px)) 10px max(10px,calc(env(safe-area-inset-bottom) + var(--inapp-bot,0px))) 10px;pointer-events:none;z-index:2}
 .tvf i{position:absolute;width:36px;height:36px;border:4px solid rgba(255,255,255,.85)}
 .tvf i:nth-child(1){left:0;top:0;border-right:0;border-bottom:0}.tvf i:nth-child(2){right:0;top:0;border-left:0;border-bottom:0}
 .tvf i:nth-child(3){left:0;bottom:0;border-right:0;border-top:0}.tvf i:nth-child(4){right:0;bottom:0;border-left:0;border-top:0}
@@ -178,13 +178,13 @@ body.dim #shade{opacity:1}
 @media (min-aspect-ratio:1/1) and (max-height:560px){
   #bAct{left:auto;right:max(12px,env(safe-area-inset-right));transform:none;width:min(180px,26vw);min-height:54px}
   #bAct:active{transform:translateY(4px)}
-  .meter{left:auto;right:max(12px,env(safe-area-inset-right));transform:none;width:min(220px,30vw);bottom:max(82px,calc(env(safe-area-inset-bottom) + 78px))}
-  .tut{left:auto;right:max(12px,env(safe-area-inset-right));transform:none;top:auto;bottom:max(150px,calc(env(safe-area-inset-bottom) + 146px));font-size:12px;width:min(260px,32vw);border-radius:16px;white-space:normal}
+  .meter{left:auto;right:max(12px,env(safe-area-inset-right));transform:none;width:min(220px,30vw);bottom:max(82px,calc(calc(env(safe-area-inset-bottom) + var(--inapp-bot,0px)) + 78px))}
+  .tut{left:auto;right:max(12px,env(safe-area-inset-right));transform:none;top:auto;bottom:max(150px,calc(calc(env(safe-area-inset-bottom) + var(--inapp-bot,0px)) + 146px));font-size:12px;width:min(260px,32vw);border-radius:16px;white-space:normal}
   .gauge{height:min(56vh,230px);top:calc(50% + 20px)}
   .banner{top:18%}
   .banner b{font-size:clamp(28px,6vw,48px)}
 }
-@media (max-height:700px) and (max-aspect-ratio:1/1){.gauge{height:min(38vh,220px)}.meter{bottom:max(80px,calc(env(safe-area-inset-bottom) + 76px))}#bAct{min-height:54px}.tut{font-size:13px}}
+@media (max-height:700px) and (max-aspect-ratio:1/1){.gauge{height:min(38vh,220px)}.meter{bottom:max(80px,calc(calc(env(safe-area-inset-bottom) + var(--inapp-bot,0px)) + 76px))}#bAct{min-height:54px}.tut{font-size:13px}}
 
 /* ---------- 結果 */
 #vResult{padding-top:max(54px,calc(env(safe-area-inset-top) + 50px));gap:8px}
@@ -227,10 +227,10 @@ body.dim #shade{opacity:1}
 .btn.xpost::before{opacity:.35}
 .btn.xpost:active{box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.28),0 1px 0 #3c3c3c}
 .btn.xpost svg{fill:currentColor;stroke:none;width:20px;height:20px}
-.skip{position:absolute;left:0;right:0;bottom:max(10px,env(safe-area-inset-bottom));text-align:center;font-size:12px;font-weight:900;opacity:.75;pointer-events:none}
+.skip{position:absolute;left:0;right:0;bottom:max(10px,calc(env(safe-area-inset-bottom) + var(--inapp-bot,0px)));text-align:center;font-size:12px;font-weight:900;opacity:.75;pointer-events:none}
 @media (max-height:700px){.btn{min-height:46px;font-size:16px}.btn.red{min-height:50px;font-size:18px}.btn.ghost{min-height:40px;font-size:14px}.rank{min-height:72px}.stamp{width:72px;height:72px}.st b{font-size:20px}.st.wide b{font-size:22px}.vc:nth-child(n+3){display:none}.vc .fc{width:30px;height:30px}.vc p{font-size:12px}}
 @media (min-aspect-ratio:1/1) and (max-height:560px){
-  #vResult{padding:max(10px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+  #vResult{padding:max(10px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(10px,calc(env(safe-area-inset-bottom) + var(--inapp-bot,0px))) max(16px,env(safe-area-inset-left))}
   #vResult .wrap{width:100%;max-width:900px;display:grid;grid-template-columns:1fr minmax(240px,320px);grid-template-rows:auto auto auto minmax(0,1fr);gap:6px 18px;align-content:center}
   .rHead{grid-column:1;justify-self:start}
   .stats{grid-column:1}
@@ -357,6 +357,6 @@ body.rain #fx::before{content:"";position:absolute;inset:-20% 0 0 0;background-i
 <script src="data.js?v=2"></script>
 <script src="snd.js?v=2"></script>
 <script type="module" src="game.js?v=2"></script>
-<script src="support.js?v=4" data-ja="ラーメン" data-en="ramen"></script>
+<script src="support.js?v=5" data-ja="ラーメン" data-en="ramen"></script>
 </body>
 </html>
